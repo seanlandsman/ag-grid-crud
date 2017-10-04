@@ -6,10 +6,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class OlympicResultsController {
+public class  AthleteController {
     private AthleteRepository athleteRepository;
 
-    public OlympicResultsController(AthleteRepository athleteRepository) {
+    public AthleteController(AthleteRepository athleteRepository) {
         this.athleteRepository = athleteRepository;
     }
 
