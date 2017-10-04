@@ -15,7 +15,7 @@ public class Athlete {
     @OneToOne()
     private Country country;
 
-    @OneToMany()
+    @OneToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "athlete_result",
             joinColumns = @JoinColumn(name = "athlete_id"),
             inverseJoinColumns = @JoinColumn(name = "result_id"))
