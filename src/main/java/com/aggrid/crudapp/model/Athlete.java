@@ -1,6 +1,5 @@
 package com.aggrid.crudapp.model;
 
-
 import javax.persistence.*;
 import java.util.List;
 
@@ -15,7 +14,7 @@ public class Athlete {
     @OneToOne()
     private Country country;
 
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "athlete_result",
             joinColumns = @JoinColumn(name = "athlete_id"),
             inverseJoinColumns = @JoinColumn(name = "result_id"))
