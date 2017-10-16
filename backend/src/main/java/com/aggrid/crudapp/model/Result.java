@@ -1,6 +1,5 @@
 package com.aggrid.crudapp.model;
 
-
 import javax.persistence.*;
 
 @Entity
@@ -32,6 +31,13 @@ public class Result {
         this.bronze = bronze;
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public int getAge() {
         return age;
