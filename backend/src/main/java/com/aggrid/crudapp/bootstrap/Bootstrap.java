@@ -81,6 +81,6 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
 
     private List<RawOlympicWinnerRecord> loadOlympicWinnersRecords() {
         CsvLoader csvLoader = new CsvLoader();
-        return csvLoader.loadObjectList(RawOlympicWinnerRecord.class, "olympicWinners.csv");
+        return csvLoader.loadObjectList(RawOlympicWinnerRecord.class, "./olympicWinners.csv");
     }
 }
