@@ -1,17 +1,22 @@
 import {BrowserModule} from '@angular/platform-browser';
 import {NgModule} from '@angular/core';
-import { HttpModule } from '@angular/http';
+import {HttpModule} from '@angular/http';
+
+import {AgGridModule} from 'ag-grid-angular';
 
 import {AppComponent} from './app.component';
 import {AthleteService} from './services/athlete.service';
+import {GridComponent} from './grid/grid.component';
 
 @NgModule({
     declarations: [
-        AppComponent
+        AppComponent,
+        GridComponent,
     ],
     imports: [
         BrowserModule,
-        HttpModule
+        HttpModule,
+        AgGridModule.withComponents([])
     ],
     providers: [AthleteService],
     bootstrap: [AppComponent]
