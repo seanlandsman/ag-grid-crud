@@ -1,4 +1,4 @@
-<div style="margin: 10px">
+<div class="input-panel">
     <div style="display: inline-block">
         <div style="float: left">
             Name: <input [(ngModel)]="name"/>
@@ -12,7 +12,7 @@
         </div>
     </div>
     <div>
-        <button (click)="insertNewResult()" style="margin-top: 10px; margin-bottom: 5px">Insert New Result</button>
+        <button (click)="insertNewResult()" class="action-button">Insert New Result</button>
         <ag-grid-angular style="width: 100%; height: 200px;"
                          class="ag-fresh"
 
@@ -23,7 +23,7 @@
                          (rowValueChanged)="onRowValueChanged($event)">
         </ag-grid-angular>
     </div>
-    <div style="margin-top: 10px">
-        <button (click)="saveAthlete()" [disabled]="!isValidAthlete()" style="float: right">Save Athlete</button>
+    <div class="submit-pane">
+        <button (click)="saveAthlete()" [disabled]="!isValidAthlete()" class="action-button" style="float: right">Save Athlete</button>
     </div>
 </div>

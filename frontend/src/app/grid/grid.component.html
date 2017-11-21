@@ -1,6 +1,6 @@
-<div style="margin-bottom: 10px">
-    <button (click)="insertNewRow()">Insert New Row</button>
-    <button (click)="deleteSelectedRows()" [disabled]="!rowsSelected()">Delete Selected Row</button>
+<div>
+    <button (click)="insertNewRow()" class="action-button">Insert New Row</button>
+    <button (click)="deleteSelectedRows()" [disabled]="!rowsSelected()" class="action-button">Delete Selected Row</button>
 </div>
 <div>
     <ag-grid-angular style="width: 100%; height: 500px;"
@@ -10,6 +10,7 @@
                      [rowData]="rowData"
 
                      rowSelection="single"
+                     [suppressHorizontalScroll]="true"
 
                      (gridReady)="onGridReady($event)"
                      (cellValueChanged)="onCellValueChanged($event)">
