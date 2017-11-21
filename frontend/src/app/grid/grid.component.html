@@ -1,6 +1,17 @@
-<ag-grid-angular style="width: 100%; height: 800px;"
+<button (click)="insertNewRow()">Insert New Row</button>
+<button (click)="deleteSelectedRows()" [disabled]="!rowsSelected()">Delete Selected Row</button>
+<ag-grid-angular style="width: 100%; height: 500px;"
                  class="ag-fresh"
-                 (gridReady)="onGridReady($event)"
+
                  [columnDefs]="columnDefs"
-                 [rowData]="rowData">
+                 [rowData]="rowData"
+
+                 rowSelection="single"
+
+                 (gridReady)="onGridReady($event)"
+                 (cellValueChanged)="onCellValueChanged($event)">
 </ag-grid-angular>
+
+<ng-template [ngIf]="showEditScreen">
+    <app-athlete-edit-screen (onAthleteSaved)="onAthleteSaved($event)"></app-athlete-edit-screen>
+</ng-template>

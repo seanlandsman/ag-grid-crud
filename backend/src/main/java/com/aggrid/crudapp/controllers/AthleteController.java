@@ -31,7 +31,8 @@ public class AthleteController {
     }
 
     @PostMapping("/deleteAthlete")
-    public void deleteAthlete(@RequestBody Long athleteId) {
+    public boolean deleteAthlete(@RequestBody Long athleteId) {
         athleteRepository.deleteById(athleteId);
+        return true;
     }
 }
