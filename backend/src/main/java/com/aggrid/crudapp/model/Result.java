@@ -15,7 +15,6 @@ public class Result {
 
     @JsonBackReference
     @ManyToOne(cascade = CascadeType.ALL)
-//    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Athlete athlete;
 
     private int age;
@@ -112,6 +111,15 @@ public class Result {
     public void setAthlete(Athlete athlete) {
         this.athlete = athlete;
     }
+
+    public Long getVersion() {
+        return version;
+    }
+
+    public void setVersion(Long version) {
+        this.version = version;
+    }
+
 
     @Override
     public boolean equals(Object o) {

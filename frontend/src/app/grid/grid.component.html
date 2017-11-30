@@ -1,6 +1,8 @@
 <div>
-    <button (click)="insertNewRow()" [disabled]="editInProgress" class="action-button" >Insert New Row</button>
-    <button (click)="deleteSelectedRows()" [disabled]="!rowsSelected() || editInProgress" class="action-button">Delete Selected Row</button>
+    <button (click)="insertNewRow()" [disabled]="editInProgress" class="action-button">Insert New Row</button>
+    <button (click)="deleteSelectedRows()" [disabled]="!rowsSelected() || editInProgress" class="action-button">Delete
+        Selected Row
+    </button>
 </div>
 <div>
     <ag-grid-angular style="width: 100%; height: 500px;"
@@ -16,7 +18,6 @@
                      suppressClickEdit
 
                      (gridReady)="onGridReady($event)"
-                     (cellValueChanged)="onCellValueChanged($event)"
                      (rowDoubleClicked)="onRowDoubleClicked($event)">
     </ag-grid-angular>
 </div>

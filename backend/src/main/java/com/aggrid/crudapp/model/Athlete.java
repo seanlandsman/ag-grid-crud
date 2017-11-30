@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Cacheable(false)
 public class Athlete {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -64,6 +63,14 @@ public class Athlete {
 
     public void setResults(List<Result> results) {
         this.results = results;
+    }
+
+    public Long getVersion() {
+        return version;
+    }
+
+    public void setVersion(Long version) {
+        this.version = version;
     }
 
     @Override

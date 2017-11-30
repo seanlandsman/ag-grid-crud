@@ -94,10 +94,6 @@ export class GridComponent implements OnInit {
         ]
     }
 
-    rowsSelected() {
-        return this.api && this.api.getSelectedRows().length > 0;
-    }
-
     onRowDoubleClicked(params: any) {
         if (this.editInProgress) {
             return;
@@ -111,17 +107,21 @@ export class GridComponent implements OnInit {
         this.editInProgress = true;
     }
 
+    rowsSelected() {
+        return this.api && this.api.getSelectedRows().length > 0;
+    }
+
     deleteSelectedRows() {
         const selectRows = this.api.getSelectedRows();
         selectRows.forEach((rowToDelete) => {
             this.athleteService.delete(rowToDelete)
                 .subscribe(
                     success => {
-                        console.log('Deleted athlete');
-                        this.setAthleteRowData();
+                        console.log(`Deleted athlete ${rowToDelete.name}`);
                     },
                     error => console.log(error)
                 );
-        })
+        });
+        this.setAthleteRowData();
     }
 }
