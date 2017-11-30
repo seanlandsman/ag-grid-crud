@@ -39,7 +39,6 @@ export class AthleteService {
     }
 
     delete(athlete: Athlete): Observable<boolean> {
-
         return this.http.post(this.deleteUrl, athlete.id, AthleteService.REQUEST_OPTIONS)
             .map((response: Response) => response.json())
             .catch(this.defaultErrorHandler());

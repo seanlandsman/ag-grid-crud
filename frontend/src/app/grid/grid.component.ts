@@ -1,10 +1,9 @@
 import {Component, OnInit} from '@angular/core';
-import {CellValueChangedEvent, ColDef, ColumnApi, GridApi} from 'ag-grid';
+import {ColDef, ColumnApi, GridApi} from 'ag-grid';
 import {AthleteService} from '../services/athlete.service';
 import {Athlete} from '../model/athlete.model';
 import {StaticDataService} from '../services/static-data.service';
 import {Country} from '../model/country.model';
-
 // we need to import this as we're making use of enterprise features, such as the richSelect cell editor
 import 'ag-grid-enterprise';
 
@@ -22,7 +21,9 @@ export class GridComponent implements OnInit {
     private api: GridApi;
     private columnApi: ColumnApi;
 
-    private showEditScreen: boolean = false;
+    private editInProgress: boolean = false;
+
+    private athleteBeingEdited: Athlete = null;
 
     // inject the athleteService
     constructor(private athleteService: AthleteService,
@@ -47,16 +48,20 @@ export class GridComponent implements OnInit {
     }
 
     onAthleteSaved(savedAthlete: Athlete) {
-        const updates = this.api.updateRowData(
-            {
-                add: [savedAthlete]
-            }
-        );
+        this.athleteService.save(savedAthlete)
+            .subscribe(
+                success => {
+                    console.log('Athlete saved');
+                    this.setAthleteRowData();
+                },
+                error => console.log(error)
+            );
 
-        this.showEditScreen = false;
+        this.athleteBeingEdited = null;
+        this.editInProgress = false;
     }
 
-    // one grid initialisation, grap the APIs and auto resize the columns to fit the available space
+    // one grid initialisation, grab the APIs and auto resize the columns to fit the available space
     onGridReady(params): void {
         this.api = params.api;
         this.columnApi = params.columnApi;
@@ -93,31 +98,22 @@ export class GridComponent implements OnInit {
         return this.api && this.api.getSelectedRows().length > 0;
     }
 
-    onCellValueChanged(params: CellValueChangedEvent) {
-        // todo compare new & old value to prevent unnecessary saves
+    onRowDoubleClicked(params: any) {
+        if (this.editInProgress) {
+            return;
+        }
 
-        // todo - on success show user a message, on error revert grid value & display message
-        // (params.data => updated row, params.newValue, params.oldValue => { id: x, name: y } // for country for eg
-
-        this.athleteService.save(params.data)
-            .subscribe(
-                savedAthlete => console.log('Athlete Saved'),
-                error => console.log(error)
-            )
+        this.athleteBeingEdited = <Athlete>params.data;
+        this.editInProgress = true;
     }
 
     insertNewRow() {
-        this.showEditScreen = true;
+        this.editInProgress = true;
     }
 
     deleteSelectedRows() {
         const selectRows = this.api.getSelectedRows();
-
-        // todo - on success show user a message
-
-        // first pass - only one row at a time
-        if (selectRows.length === 1) {
-            const rowToDelete = selectRows[0];
+        selectRows.forEach((rowToDelete) => {
             this.athleteService.delete(rowToDelete)
                 .subscribe(
                     success => {
@@ -125,7 +121,7 @@ export class GridComponent implements OnInit {
                         this.setAthleteRowData();
                     },
                     error => console.log(error)
-                )
-        }
+                );
+        })
     }
 }

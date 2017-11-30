@@ -5,10 +5,11 @@
         </div>
         <div style="float: left; padding-left: 10px">
             Country:
-            <select [(ngModel)]="country">
+                <select [(ngModel)]="country" [compareWith]="countryComparator">
                 <option disabled selected>Country...</option>
                 <option *ngFor="let country of countries" [ngValue]="country">{{ country.name }}</option>
             </select>
+            {{ country?.name }}
         </div>
     </div>
     <div>

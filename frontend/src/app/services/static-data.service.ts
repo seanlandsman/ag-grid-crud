@@ -36,5 +36,4 @@ export class StaticDataService {
     private defaultErrorHandler() {
         return (error: any) => Observable.throw(error.json().error || 'Server error');
     }
-
 }

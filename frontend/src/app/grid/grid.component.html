@@ -1,6 +1,6 @@
 <div>
-    <button (click)="insertNewRow()" class="action-button">Insert New Row</button>
-    <button (click)="deleteSelectedRows()" [disabled]="!rowsSelected()" class="action-button">Delete Selected Row</button>
+    <button (click)="insertNewRow()" [disabled]="editInProgress" class="action-button" >Insert New Row</button>
+    <button (click)="deleteSelectedRows()" [disabled]="!rowsSelected() || editInProgress" class="action-button">Delete Selected Row</button>
 </div>
 <div>
     <ag-grid-angular style="width: 100%; height: 500px;"
@@ -9,14 +9,19 @@
                      [columnDefs]="columnDefs"
                      [rowData]="rowData"
 
-                     rowSelection="single"
-                     [suppressHorizontalScroll]="true"
+                     rowSelection="multiple"
+
+                     suppressRowClickSelection
+                     suppressHorizontalScroll
+                     suppressClickEdit
 
                      (gridReady)="onGridReady($event)"
-                     (cellValueChanged)="onCellValueChanged($event)">
+                     (cellValueChanged)="onCellValueChanged($event)"
+                     (rowDoubleClicked)="onRowDoubleClicked($event)">
     </ag-grid-angular>
 </div>
 
-<ng-template [ngIf]="showEditScreen">
-    <app-athlete-edit-screen (onAthleteSaved)="onAthleteSaved($event)"></app-athlete-edit-screen>
+<ng-template [ngIf]="editInProgress">
+    <app-athlete-edit-screen [athlete]="athleteBeingEdited"
+                             (onAthleteSaved)="onAthleteSaved($event)"></app-athlete-edit-screen>
 </ng-template>

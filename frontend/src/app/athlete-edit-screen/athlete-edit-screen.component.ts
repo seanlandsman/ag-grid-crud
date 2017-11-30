@@ -1,5 +1,5 @@
-import {Component, OnInit, Output, EventEmitter} from '@angular/core';
-import {CellValueChangedEvent, ColDef, ColumnApi, GridApi} from 'ag-grid';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {ColDef, ColumnApi, GridApi} from 'ag-grid';
 import {StaticDataService} from '../services/static-data.service';
 import {Result} from '../model/result.model';
 import {Sport} from '../model/sport.model';
@@ -28,6 +28,7 @@ export class AthleteEditScreenComponent implements OnInit {
     // the results sub-table columns
     private columnDefs: ColDef[];
 
+    @Input() athlete: Athlete = null;
     @Output() onAthleteSaved = new EventEmitter<Athlete>();
 
     constructor(staticDataService: StaticDataService) {
@@ -48,8 +49,16 @@ export class AthleteEditScreenComponent implements OnInit {
         );
     }
 
-    ngOnInit(): void {
-        //     this.rowData = this.athlete.results;
+    ngOnInit() {
+        if (this.athlete) {
+            this.name = this.athlete.name;
+            this.country = this.athlete.country;
+            this.rowData = this.athlete.results.slice(0);
+        }
+    }
+
+    countryComparator(c1: Country, c2: Country): boolean {
+        return c1 && c2 ? c1.id === c2.id : false;
     }
 
     insertNewResult() {
@@ -76,6 +85,7 @@ export class AthleteEditScreenComponent implements OnInit {
     saveAthlete() {
         const athlete = new Athlete();
 
+        athlete.id = this.athlete ? this.athlete.id : null;
         athlete.name = this.name;
         athlete.country = this.country;
 
@@ -92,7 +102,6 @@ export class AthleteEditScreenComponent implements OnInit {
                 gold: data.gold,
                 sport: data.sport
             });
-
         });
 
         this.onAthleteSaved.emit(athlete);
@@ -103,19 +112,14 @@ export class AthleteEditScreenComponent implements OnInit {
         this.columnApi = params.columnApi;
 
         this.api.sizeColumnsToFit();
-    }
 
-    onCellValueChanged(params: CellValueChangedEvent) {
+        // temp fix until AG-1181 is fixed
+        this.api.hideOverlay();
     }
 
     // create some simple column definitions
     private createColumnDefs(sports: Sport[]) {
         return [
-            {
-                headerName: '#',
-                checkboxSelection: true,
-                width: 25
-            },
             {
                 field: 'age',
                 editable: true
@@ -146,7 +150,7 @@ export class AthleteEditScreenComponent implements OnInit {
                 editable: true,
                 cellEditor: 'richSelect',
                 cellEditorParams: {
-                    values: this.countries,
+                    values: sports,
                     cellRenderer: (params) => params.value.name
                 }
             }
