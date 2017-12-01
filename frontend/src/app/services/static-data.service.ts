@@ -9,7 +9,7 @@ import {StaticData} from '../model/static-data.model';
 
 @Injectable()
 export class StaticDataService {
-    private apiRootUrl = 'http://localhost:8090';
+    private apiRootUrl = 'http://localhost:8080';
 
     private countriesUrl = this.apiRootUrl + '/countries';
     private sportsUrl = this.apiRootUrl + '/sports';

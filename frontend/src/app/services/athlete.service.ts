@@ -9,7 +9,7 @@ import {Observable} from 'rxjs/Observable';
 export class AthleteService {
     static REQUEST_OPTIONS: RequestOptions = new RequestOptions({headers: new Headers({'Content-Type': 'application/json'})});
 
-    private apiRootUrl = 'http://localhost:8090';
+    private apiRootUrl = 'http://localhost:8080';
 
     private findAllUrl = this.apiRootUrl + '/athletes';
     private findByIdUrl = this.apiRootUrl + '/athlete';
