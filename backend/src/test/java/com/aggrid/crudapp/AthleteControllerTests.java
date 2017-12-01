@@ -121,7 +121,7 @@ public class AthleteControllerTests {
         Athlete updatedAthlete = response.getBody();
         List<Result> updatedAthleteResults = updatedAthlete.getResults();
 
-        assertEquals(updatedAthleteResults.get(0), existingResult);
+        assertResultsAreEqual(existingResult, updatedAthleteResults.get(0));
 
         Result newlyCreatedResult = updatedAthleteResults.get(1);
         assertEquals(newlyCreatedResult.getAge(), 101);

@@ -5,8 +5,10 @@
     </button>
 </div>
 <div>
-    <ag-grid-angular style="width: 100%; height: 300px;"
+    <ag-grid-angular style="width: 100%; height: 500px;"
                      class="ag-fresh"
+
+                     #grid
 
                      [columnDefs]="columnDefs"
                      [rowData]="rowData"
@@ -17,6 +19,8 @@
                      suppressHorizontalScroll
                      suppressClickEdit
 
+                     [getRowNodeId]="getRowNodeId"
+
                      (gridReady)="onGridReady($event)"
                      (rowDoubleClicked)="onRowDoubleClicked($event)">
     </ag-grid-angular>
@@ -24,5 +28,6 @@
 
 <ng-template [ngIf]="editInProgress">
     <app-athlete-edit-screen [athlete]="athleteBeingEdited"
+                             [containerCoords]="containerCoords"
                              (onAthleteSaved)="onAthleteSaved($event)"></app-athlete-edit-screen>
 </ng-template>

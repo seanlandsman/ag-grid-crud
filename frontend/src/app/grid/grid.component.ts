@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 
 import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/observable/forkJoin';
@@ -8,7 +8,6 @@ import {AthleteService} from '../services/athlete.service';
 import {Athlete} from '../model/athlete.model';
 import {StaticDataService} from '../services/static-data.service';
 import {Country} from '../model/country.model';
-
 // we need to import this as we're making use of enterprise features, such as the richSelect cell editor
 import 'ag-grid-enterprise';
 
@@ -17,7 +16,7 @@ import 'ag-grid-enterprise';
     templateUrl: './grid.component.html',
     styleUrls: ['./grid.component.css']
 })
-export class GridComponent implements OnInit {
+export class GridComponent {
     // row data and column definitions
     private rowData: Athlete[];
     private columnDefs: ColDef[];
@@ -29,6 +28,9 @@ export class GridComponent implements OnInit {
     private editInProgress: boolean = false;
 
     private athleteBeingEdited: Athlete = null;
+    private containerCoords: {} = null;
+
+    @ViewChild('grid', {read: ElementRef}) public grid;
 
     // inject the athleteService
     constructor(private athleteService: AthleteService,
@@ -38,26 +40,37 @@ export class GridComponent implements OnInit {
             countries => this.columnDefs = this.createColumnDefs(countries),
             error => console.log(error)
         );
-    }
 
-    // on init, read to the athlete data
-    ngOnInit() {
-        this.setAthleteRowData();
-    }
-
-    setAthleteRowData() {
         this.athleteService.findAll().subscribe(
             athletes => this.rowData = athletes,
             error => console.log(error)
         )
     }
 
-    onAthleteSaved(savedAthlete: Athlete) {
-        this.athleteService.save(savedAthlete)
+    getRowNodeId(params) {
+        return params.id;
+    }
+
+    onAthleteSaved(athleteToSave: Athlete) {
+        this.athleteService.save(athleteToSave)
             .subscribe(
-                success => {
-                    console.log('Athlete saved');
-                    this.setAthleteRowData();
+                savedAthlete => {
+                    console.log('Athlete saved', savedAthlete.name);
+
+                    const added = [];
+                    const updated = [];
+                    if (athleteToSave.id) {
+                        updated.push(savedAthlete);
+                    } else {
+                        added.push(savedAthlete);
+                    }
+
+                    this.api.updateRowData(
+                        {
+                            add: added,
+                            update: updated
+                        }
+                    );
                 },
                 error => console.log(error)
             );
@@ -104,12 +117,23 @@ export class GridComponent implements OnInit {
             return;
         }
 
+        this.updateContainerCoords();
         this.athleteBeingEdited = <Athlete>params.data;
         this.editInProgress = true;
     }
 
     insertNewRow() {
+        this.updateContainerCoords();
         this.editInProgress = true;
+    }
+
+    private updateContainerCoords() {
+        this.containerCoords = {
+            top: this.grid.nativeElement.offsetTop,
+            left: this.grid.nativeElement.offsetLeft,
+            height: this.grid.nativeElement.offsetHeight,
+            width: this.grid.nativeElement.offsetWidth
+        };
     }
 
     rowsSelected() {
@@ -124,7 +148,16 @@ export class GridComponent implements OnInit {
             return this.athleteService.delete(rowToDelete);
         });
 
-        // then subscribe to these and once all done, refresh the grid data
-        Observable.forkJoin(...deleteSubscriptions).subscribe(results => this.setAthleteRowData())
+        // then subscribe to these and once all done, update the grid
+        Observable.forkJoin(...deleteSubscriptions).subscribe(
+            results => {
+                // only redraw removed rows...
+                this.api.updateRowData(
+                    {
+                        remove: selectRows
+                    }
+                );
+            }
+        );
     }
 }

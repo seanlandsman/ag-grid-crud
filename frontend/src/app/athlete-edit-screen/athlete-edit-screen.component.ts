@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
 import {ColDef, ColumnApi, GridApi} from 'ag-grid';
 import {StaticDataService} from '../services/static-data.service';
 import {Result} from '../model/result.model';
@@ -28,8 +28,15 @@ export class AthleteEditScreenComponent implements OnInit {
     // the results sub-table columns
     private columnDefs: ColDef[];
 
+    @Input() containerCoords: any = null;
     @Input() athlete: Athlete = null;
     @Output() onAthleteSaved = new EventEmitter<Athlete>();
+
+    // to position this component relative to the containing component
+    @ViewChild('panel', {read: ElementRef}) public panel;
+    private width: any;
+    private left: any;
+    private top: any;
 
     constructor(staticDataService: StaticDataService) {
         staticDataService.countries().subscribe(
@@ -50,6 +57,8 @@ export class AthleteEditScreenComponent implements OnInit {
     }
 
     ngOnInit() {
+        this.setPanelCoordinates();
+
         if (this.athlete) {
             this.name = this.athlete.name;
             this.country = this.athlete.country;
@@ -86,6 +95,7 @@ export class AthleteEditScreenComponent implements OnInit {
         const athlete = new Athlete();
 
         athlete.id = this.athlete ? this.athlete.id : null;
+        athlete.version = this.athlete ? this.athlete.version : undefined;
         athlete.name = this.name;
         athlete.country = this.country;
 
@@ -94,6 +104,7 @@ export class AthleteEditScreenComponent implements OnInit {
             const {data} = node;
             athlete.results.push(<Result> {
                 id: data.id,
+                version: data.version,
                 age: data.age,
                 year: data.year,
                 date: data.date,
@@ -157,4 +168,19 @@ export class AthleteEditScreenComponent implements OnInit {
         ]
     }
 
+    private setPanelCoordinates() {
+        // make our width 100pixels smaller than the container
+        this.width = (this.containerCoords.width - 100);
+
+        // set our left position to be the container left position plus half the difference in widths between this
+        // component and the container, minus the 15px padding
+        this.left = Math.floor(this.containerCoords.left + (this.containerCoords.width - this.width) / 2 - 15) + 'px';
+
+        // set our left position to be the container top position plus half the difference in height between this
+        // component and the container
+        this.top = Math.floor(this.containerCoords.top + (this.containerCoords.height - this.panel.nativeElement.offsetHeight) / 2) + 'px';
+
+        // add the px suffix back in (omitted above so that maths can work)
+        this.width = this.width + 'px'
+    }
 }

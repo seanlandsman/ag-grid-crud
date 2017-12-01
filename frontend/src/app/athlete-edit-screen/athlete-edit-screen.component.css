@@ -1,8 +1,9 @@
 .input-panel {
+    position: absolute;
     border-radius: 5px;
     border: solid lightgray 1px;
-    margin: 15px;
     padding: 15px;
+    background-color: whitesmoke;
 }
 
 .submit-pane {
