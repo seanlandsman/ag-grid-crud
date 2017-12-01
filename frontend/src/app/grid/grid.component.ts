@@ -1,9 +1,14 @@
 import {Component, OnInit} from '@angular/core';
+
+import {Observable} from 'rxjs/Observable';
+import 'rxjs/add/observable/forkJoin';
+
 import {ColDef, ColumnApi, GridApi} from 'ag-grid';
 import {AthleteService} from '../services/athlete.service';
 import {Athlete} from '../model/athlete.model';
 import {StaticDataService} from '../services/static-data.service';
 import {Country} from '../model/country.model';
+
 // we need to import this as we're making use of enterprise features, such as the richSelect cell editor
 import 'ag-grid-enterprise';
 
@@ -113,15 +118,13 @@ export class GridComponent implements OnInit {
 
     deleteSelectedRows() {
         const selectRows = this.api.getSelectedRows();
-        selectRows.forEach((rowToDelete) => {
-            this.athleteService.delete(rowToDelete)
-                .subscribe(
-                    success => {
-                        console.log(`Deleted athlete ${rowToDelete.name}`);
-                    },
-                    error => console.log(error)
-                );
+
+        // create an Observable for each row to delete
+        const deleteSubscriptions = selectRows.map((rowToDelete) => {
+            return this.athleteService.delete(rowToDelete);
         });
-        this.setAthleteRowData();
+
+        // then subscribe to these and once all done, refresh the grid data
+        Observable.forkJoin(...deleteSubscriptions).subscribe(results => this.setAthleteRowData())
     }
 }
