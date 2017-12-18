@@ -1,4 +1,4 @@
-import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import {Component, ElementRef, ViewChild} from '@angular/core';
 
 import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/observable/forkJoin';
@@ -42,7 +42,10 @@ export class GridComponent {
         );
 
         this.athleteService.findAll().subscribe(
-            athletes => this.rowData = athletes,
+            athletes => {
+                this.rowData = athletes;
+                this.api.sizeColumnsToFit();
+            },
             error => console.log(error)
         )
     }
