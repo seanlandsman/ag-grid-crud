@@ -1,0 +1,10 @@
+.action-button {
+    margin: 5px 0 10px 0;
+    height: 30px;
+    border-radius: 5px;
+    background-color: lightgreen;
+}
+
+.action-button[disabled] {
+    background-color: lightgray;
+}
